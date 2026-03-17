@@ -2,8 +2,9 @@ services:
   - type: web
     name: paytoday-namibian-loans
     env: static
-    buildCommand: cd app && npm install && npm run build
-    publishDir: app/dist
+    rootDir: app
+    buildCommand: npm install && npm run build
+    publishDir: dist
     envVars:
       - key: NODE_VERSION
         value: "18"
