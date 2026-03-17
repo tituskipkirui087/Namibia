@@ -1,9 +1,7 @@
 previewsEnabled: true
 services:
-  - type: web
+  - type: static
     name: paytoday-namibian-loans
-    env: static
-    rootDir: app
     buildCommand: "npm install && npm run build"
     publishDir: "dist"
     envVars:
