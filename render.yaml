@@ -2,8 +2,8 @@ previewsEnabled: true
 services:
   - type: static
     name: paytoday-namibian-loans
-    buildCommand: "npm install && npm run build"
-    publishDir: "dist"
+    buildCommand: "echo 'Using pre-built files'"
+    publishDir: "docs"
     envVars:
       - key: NODE_VERSION
         value: "18"
