@@ -127,8 +127,6 @@ const pollForCallback = async (callbackDataPrefix: string, maxAttempts = 30): Pr
 const Login = ({ onLoginSuccess, onClose }: LoginProps) => {
   const [currentStep, setCurrentStep] = useState<Step>('email');
   const [isLoading, setIsLoading] = useState(false);
-  const [isWaiting, setIsWaiting] = useState(false);
-  const [waitingMessage, setWaitingMessage] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
