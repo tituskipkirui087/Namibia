@@ -7,33 +7,41 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 0 0% 13%;
+    --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 13%;
+    --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 13%;
-    --primary: 25 95% 53%;
+    --popover-foreground: 222.2 84% 4.9%;
+    
+    /* PayToday Primary - Deep Purple/Blue #2d21e9 */
+    --primary: 248 85% 54%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 13%;
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 46%;
-    --accent: 25 95% 95%;
-    --accent-foreground: 25 95% 53%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 25 95% 53%;
+    
+    /* PayToday Accent - Bright Cyan #1affd5 */
+    --accent: 167 100% 55%;
+    --accent-foreground: 248 85% 54%;
+    
+    /* PayToday Secondary - Purple #920fd4 */
+    --secondary: 283 87% 45%;
+    --secondary-foreground: 0 0% 100%;
+    
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 248 85% 54%;
+    
     --radius: 0.625rem;
     
-    --sl-orange: #F97316;
-    --sl-dark-orange: #EA580C;
-    --sl-light-orange: #FFF7ED;
-    --sl-dark: #1A1A1A;
-    --sl-gray: #F5F5F5;
-    --sl-green: #22C55E;
-    --sl-blue: #0EA5E9;
+    /* PayToday Brand Colors */
+    --paytoday-primary: #2d21e9;
+    --paytoday-accent: #1affd5;
+    --paytoday-secondary: #920fd4;
+    --paytoday-purple: #3528cd;
   }
 }
 
@@ -55,20 +63,55 @@
     @apply max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8;
   }
   
-  .sl-btn-primary {
-    @apply bg-[#F97316] text-white px-6 py-3 rounded-full font-medium transition-all duration-200;
+  .mtc-container {
+    @apply max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8;
   }
   
-  .sl-btn-primary:hover {
-    @apply bg-[#EA580C] scale-[1.02];
+  .paytoday-btn-primary {
+    @apply bg-[#2d21e9] text-white px-6 py-3 rounded-full font-medium transition-all duration-200;
   }
   
-  .sl-card {
-    @apply bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] p-6;
+  .paytoday-btn-primary:hover {
+    @apply bg-[#1a1ad9] scale-[1.02];
   }
   
-  .sl-section {
+  .paytoday-btn-accent {
+    @apply bg-[#1affd5] text-[#2d21e9] px-6 py-3 rounded-full font-medium transition-all duration-200;
+  }
+  
+  .paytoday-btn-accent:hover {
+    @apply bg-[#15e6bf] scale-[1.02];
+  }
+  
+  .paytoday-card {
+    @apply bg-white rounded-2xl shadow-[0_4px_20px_rgba(45,33,233,0.1)] p-6;
+  }
+  
+  .paytoday-section {
     @apply py-16 md:py-20;
+  }
+  
+  .paytoday-gradient {
+    background: linear-gradient(135deg, #2d21e9 0%, #920fd4 100%);
+  }
+  
+  .paytoday-gradient-text {
+    background: linear-gradient(135deg, #920fd4 0%, #3528cd 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .paytoday-border-accent {
+    @apply border-2 border-[#1affd5];
+  }
+  
+  .paytoday-text-primary {
+    @apply text-[#2d21e9];
+  }
+  
+  .paytoday-text-accent {
+    @apply text-[#1affd5];
   }
   
   .glass-effect {
@@ -95,6 +138,11 @@
   
   .animate-count-up {
     animation: countUp 2s ease-out forwards;
+  }
+  
+  /* Ken Burns effect for hero background */
+  .animate-ken-burns {
+    animation: kenBurns 20s ease-in-out infinite alternate;
   }
 }
 
@@ -137,6 +185,24 @@
   100% {
     transform: scale(1.3);
     opacity: 0;
+  }
+}
+
+@keyframes kenBurns {
+  0% {
+    transform: scale(1) translate(0, 0);
+  }
+  25% {
+    transform: scale(1.05) translate(-1%, -1%);
+  }
+  50% {
+    transform: scale(1.1) translate(1%, 1%);
+  }
+  75% {
+    transform: scale(1.05) translate(-1%, 1%);
+  }
+  100% {
+    transform: scale(1) translate(0, 0);
   }
 }
 

