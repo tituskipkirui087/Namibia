@@ -2,4 +2,3 @@ services:
   - type: static
     name: paytoday-namibian-loans
     publishDir: docs
-    buildCommand: ""
