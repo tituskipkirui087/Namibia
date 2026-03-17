@@ -1,12 +1,11 @@
+previewsEnabled: true
 services:
   - type: web
     name: paytoday-namibian-loans
     env: static
     rootDir: app
-    buildCommand: npm install && npm run build
-    publishDir: dist
+    buildCommand: "npm install && npm run build"
+    publishDir: "dist"
     envVars:
       - key: NODE_VERSION
         value: "18"
-      - key: NPM_CONFIG_PRODUCTION
-        value: "false"
